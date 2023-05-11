@@ -115,5 +115,8 @@ def main(screen, width):
                 exit()
             if started:
                 continue
-
+            
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                (point_x, point_y) = pygame.mouse.get_pos()
+                print(point_x, point_y)
 main(screen, WIDTH)
