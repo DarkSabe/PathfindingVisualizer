@@ -50,6 +50,8 @@ class Node:
         self.colour = YELLOW
     def set_wall(self):
         self.colour = BLACK
+    def set_unvisited(self):
+        self.colour = WHITE
 
     #Checks the state of the node
     def is_start(self):
@@ -64,6 +66,8 @@ class Node:
         return self.colour == YELLOW
     def is_wall(self):
         return self.colour == BLACK
+    def is_unvisited(self):
+        return self.colour == WHITE
     
     #Draws the node onto the screen
     def draw_node(self, screen):
@@ -98,8 +102,9 @@ def draw_all(screen, width, rows, grid):
     draw_grid(screen, width, rows)
     pygame.display.update()
 
+#Main function that computes user's input
 def main(screen, width):
-    rows = 36
+    rows = 36 #Have the user specify later on how many rows (set amount 36, 100, etc)
 
     grid = add_grid(rows, width)
     start = None
@@ -110,13 +115,31 @@ def main(screen, width):
 
     while running:
         draw_all(screen, width, rows, grid)
+        #Checks user's event actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
             if started:
                 continue
-            
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if pygame.mouse.get_pressed()[0]:
                 (point_x, point_y) = pygame.mouse.get_pos()
-                print(point_x, point_y)
+                (pos_x, pos_y) = ((point_x // (width // rows)), (point_y // (width // rows)))
+                if start == None and end != grid[pos_x][pos_y]:
+                    start = grid[pos_x][pos_y]
+                    grid[pos_x][pos_y].set_start()
+                elif start != None and end == None and start != grid[pos_x][pos_y]:
+                    end = grid[pos_x][pos_y]
+                    grid[pos_x][pos_y].set_end()
+                elif start != grid[pos_x][pos_y] and end != grid[pos_x][pos_y]:
+                    grid[pos_x][pos_y].set_wall()
+                           
+            if pygame.mouse.get_pressed()[2]:
+                (point_x, point_y) = pygame.mouse.get_pos()
+                (pos_x, pos_y) = ((point_x // (width // rows)), (point_y // (width // rows)))
+                if start == grid[pos_x][pos_y]:
+                    start = None
+                elif end == grid[pos_x][pos_y]:
+                    end = None
+                grid[pos_x][pos_y].set_unvisited()
+                
 main(screen, WIDTH)
