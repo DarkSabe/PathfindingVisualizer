@@ -11,7 +11,8 @@ pygame.init()
 #RGB colour values and assigns them
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-GREEN = (57,255,20)
+NEONGREEN = (57,255,20)
+GREEN = (34,177,76)
 RED = (255,49,49)
 GREY = (169,169,169)
 CYAN = (0,100,100)
@@ -31,7 +32,7 @@ pygame.display.set_caption('Pathfinding Visualizer')
 #A class to define each node
 class Node:
     #Node class constructor
-    def __init__(self,row,col,width,total_rows):
+    def __init__(self, row, col, width, total_rows):
         self.colour = WHITE
         self.row = row
         self.col = col
@@ -43,7 +44,7 @@ class Node:
 
     #Sets the state of the node
     def set_start(self):
-        self.colour = GREEN
+        self.colour = NEONGREEN
     def set_end(self):
         self.colour = RED
     def set_visted(self):
@@ -59,7 +60,7 @@ class Node:
 
     #Checks the state of the node
     def is_start(self):
-        return self.colour == GREEN
+        return self.colour == NEONGREEN
     def is_end(self):
         return self.colour == RED
     def is_visited(self):
@@ -79,6 +80,48 @@ class Node:
 
     def neighbours(self):
         pass
+
+
+def draw_alg_buttons(screen):
+        font1 = pygame.font.SysFont(None, 48)
+        font2 = pygame.font.SysFont(None, 24)
+
+        #Draws the A* button
+        pygame.draw.rect(screen, WHITE, [990, 260, 115, 75], border_radius= 15)
+        pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
+        astar_title = font1.render("A*", True, BLACK)
+        screen.blit(astar_title, (1030, 283))
+        
+        #Draws the BFS button
+        pygame.draw.rect(screen, WHITE, [920, 360, 115, 75], border_radius= 15)
+        pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
+        bfs_title = font1.render("BFS", True, BLACK)
+        screen.blit(bfs_title, (943, 383))
+
+        #Draws the Dijkstra's button
+        pygame.draw.rect(screen, WHITE, [1060, 360, 115, 75], border_radius= 15)
+        pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
+        dijkstras_title = font2.render("Dijkstra's", True, BLACK)
+        screen.blit(dijkstras_title, (1082, 390))
+        
+        #Draws the START button
+        pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], border_radius= 15)
+
+        #Draws the stats board
+        pygame.draw.rect(screen, BLACK, [920, 560, 255, 300])
+        stats_title = font1.render("Stats:", True, WHITE)
+        screen.blit(stats_title, (997, 575))
+    
+def draw_start_button(screen):
+        font1 = pygame.font.SysFont(None, 48)
+        
+        #Draws the START button
+        pygame.draw.rect(screen, GREEN, [920, 460, 255, 75], border_radius= 15)
+        pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], 5, border_radius= 15)
+        start_title = font1.render("Start", True, BLACK)
+        screen.blit(start_title, (1007, 482))
+#def stop_button(): 
+
 
 #Creates the grid and each node
 def add_grid(rows, width):
@@ -131,6 +174,8 @@ def draw_all(screen, width, rows, grid):
             grid[i][j].draw_node(screen)
     draw_panel(screen, width, rows)
     draw_grid(screen, width, rows)
+    draw_alg_buttons(screen)
+    #draw_start_button(screen) # remove and place into algorithm button functions
     pygame.display.update()
 
 #Main function that computes user's input
