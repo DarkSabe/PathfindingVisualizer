@@ -11,12 +11,14 @@ pygame.init()
 #RGB colour values and assigns them
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-NEONGREEN = (57,255,20)
+NEON_GREEN = (57,255,20)
 GREEN = (34,177,76)
-RED = (255,49,49)
+NEON_RED = (255,49,49)
+RED = (220,20,60)
 GREY = (169,169,169)
 CYAN = (0,100,100)
 PURPLE = (160,32,240)
+LIGHT_PURPLE = (204, 153, 255)
 YELLOW = (255,255,0)
 BLUE = (100, 149, 237)
 
@@ -44,9 +46,9 @@ class Node:
 
     #Sets the state of the node
     def set_start(self):
-        self.colour = NEONGREEN
+        self.colour = NEON_GREEN
     def set_end(self):
-        self.colour = RED
+        self.colour = NEON_RED
     def set_visted(self):
         self.colour = PURPLE
     def set_open(self):
@@ -60,9 +62,9 @@ class Node:
 
     #Checks the state of the node
     def is_start(self):
-        return self.colour == NEONGREEN
+        return self.colour == NEON_GREEN
     def is_end(self):
-        return self.colour == RED
+        return self.colour == NEON_RED
     def is_visited(self):
         return self.colour == PURPLE
     def is_open(self):
@@ -83,45 +85,108 @@ class Node:
 
 
 def draw_alg_buttons(screen):
-        font1 = pygame.font.SysFont(None, 48)
-        font2 = pygame.font.SysFont(None, 24)
+    font1 = pygame.font.SysFont(None, 48)
+    font2 = pygame.font.SysFont(None, 24)
 
-        #Draws the A* button
-        pygame.draw.rect(screen, WHITE, [990, 260, 115, 75], border_radius= 15)
-        pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
-        astar_title = font1.render("A*", True, BLACK)
-        screen.blit(astar_title, (1030, 283))
-        
-        #Draws the BFS button
-        pygame.draw.rect(screen, WHITE, [920, 360, 115, 75], border_radius= 15)
-        pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
-        bfs_title = font1.render("BFS", True, BLACK)
-        screen.blit(bfs_title, (943, 383))
+    #Draws the A* button
+    pygame.draw.rect(screen, WHITE, [990, 260, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
+    astar_title = font1.render("A*", True, BLACK)
+    screen.blit(astar_title, (1030, 283))
+    
+    #Draws the BFS button
+    pygame.draw.rect(screen, WHITE, [920, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
+    bfs_title = font1.render("BFS", True, BLACK)
+    screen.blit(bfs_title, (943, 383))
 
-        #Draws the Dijkstra's button
-        pygame.draw.rect(screen, WHITE, [1060, 360, 115, 75], border_radius= 15)
-        pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
-        dijkstras_title = font2.render("Dijkstra's", True, BLACK)
-        screen.blit(dijkstras_title, (1082, 390))
-        
-        #Draws the START button
-        pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], border_radius= 15)
+    #Draws the Dijkstra's button
+    pygame.draw.rect(screen, WHITE, [1060, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
+    dijkstras_title = font2.render("Dijkstra's", True, BLACK)
+    screen.blit(dijkstras_title, (1082, 390))
+    
+    #Draws the START button
+    pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], border_radius= 15)
 
-        #Draws the stats board
-        pygame.draw.rect(screen, BLACK, [920, 560, 255, 300])
-        stats_title = font1.render("Stats:", True, WHITE)
-        screen.blit(stats_title, (997, 575))
+    #Draws the stats board
+    pygame.draw.rect(screen, BLACK, [920, 560, 255, 300])
+    stats_title = font1.render("Stats:", True, WHITE)
+    screen.blit(stats_title, (997, 575))
     
 def draw_start_button(screen):
-        font1 = pygame.font.SysFont(None, 48)
-        
-        #Draws the START button
-        pygame.draw.rect(screen, GREEN, [920, 460, 255, 75], border_radius= 15)
-        pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], 5, border_radius= 15)
-        start_title = font1.render("Start", True, BLACK)
-        screen.blit(start_title, (1007, 482))
-#def stop_button(): 
+    font = pygame.font.SysFont(None, 48)
+    
+    #Draws the START button
+    pygame.draw.rect(screen, GREEN, [920, 460, 255, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], 5, border_radius= 15)
+    start_title = font.render("Start", True, BLACK)
+    screen.blit(start_title, (1007, 482))
 
+def draw_astar_button(screen):
+    font1 = pygame.font.SysFont(None, 48)
+    font2 = pygame.font.SysFont(None, 24)
+    #Draws the highlighted A* button
+    pygame.draw.rect(screen, LIGHT_PURPLE, [990, 260, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
+    astar_title = font1.render("A*", True, BLACK)
+    screen.blit(astar_title, (1030, 283))
+
+    #Clears the highlighted BFS button
+    pygame.draw.rect(screen, WHITE, [920, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
+    bfs_title = font1.render("BFS", True, BLACK)
+    screen.blit(bfs_title, (943, 383))
+
+    #Clears the highlighted Dijkstra's button
+    pygame.draw.rect(screen, WHITE, [1060, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
+    dijkstras_title = font2.render("Dijkstra's", True, BLACK)
+    screen.blit(dijkstras_title, (1082, 390))
+
+def draw_bfs_button(screen):
+    font1 = pygame.font.SysFont(None, 48)
+    font2 = pygame.font.SysFont(None, 24)
+
+    #Draws the highlighted BFS button
+    pygame.draw.rect(screen, LIGHT_PURPLE, [920, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
+    bfs_title = font1.render("BFS", True, BLACK)
+    screen.blit(bfs_title, (943, 383))
+
+    #Clears the highlighted A* button
+    pygame.draw.rect(screen, WHITE, [990, 260, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
+    astar_title = font1.render("A*", True, BLACK)
+    screen.blit(astar_title, (1030, 283))
+
+    #Clears the highlighted Dijkstra's button
+    pygame.draw.rect(screen, WHITE, [1060, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
+    dijkstras_title = font2.render("Dijkstra's", True, BLACK)
+    screen.blit(dijkstras_title, (1082, 390))
+
+def draw_dijkstras_button(screen):
+    font1 = pygame.font.SysFont(None, 48)
+    font2 = pygame.font.SysFont(None, 24)
+
+    #Draws the highlighted Dijkstra's button
+    pygame.draw.rect(screen, LIGHT_PURPLE, [1060, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [1060, 360, 115, 75], 5, border_radius= 15)
+    dijkstras_title = font2.render("Dijkstra's", True, BLACK)
+    screen.blit(dijkstras_title, (1082, 390))
+
+    #Clears the highlighted A* button
+    pygame.draw.rect(screen, WHITE, [990, 260, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [990, 260, 115, 75], 5, border_radius= 15)
+    astar_title = font1.render("A*", True, BLACK)
+    screen.blit(astar_title, (1030, 283))
+
+    #Clears the highlighted BFS button
+    pygame.draw.rect(screen, WHITE, [920, 360, 115, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 360, 115, 75], 5, border_radius= 15)
+    bfs_title = font1.render("BFS", True, BLACK)
+    screen.blit(bfs_title, (943, 383))
 
 #Creates the grid and each node
 def add_grid(rows, width):
@@ -167,7 +232,7 @@ def draw_panel(screen, width, rows):
 
 
 #Draws and displays all of the visual components 
-def draw_all(screen, width, rows, grid):
+def draw_all(screen, width, rows, grid, algorithm):
     screen.fill(WHITE)
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -175,6 +240,16 @@ def draw_all(screen, width, rows, grid):
     draw_panel(screen, width, rows)
     draw_grid(screen, width, rows)
     draw_alg_buttons(screen)
+
+    if algorithm == 1:
+        draw_astar_button(screen)
+        draw_start_button(screen)
+    elif algorithm == 2:
+        draw_bfs_button(screen)
+        draw_start_button(screen)
+    elif algorithm == 3:
+        draw_dijkstras_button(screen)
+        draw_start_button(screen)
     #draw_start_button(screen) # remove and place into algorithm button functions
     pygame.display.update()
 
@@ -191,7 +266,7 @@ def main(screen, width):
     started = False
 
     while running:
-        draw_all(screen, width, rows, grid)
+        draw_all(screen, width, rows, grid, algorithm)
         #Checks user's event actions
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -207,16 +282,32 @@ def main(screen, width):
             if pygame.mouse.get_pressed()[0]:
                 (point_x, point_y) = pygame.mouse.get_pos()
                 (pos_x, pos_y) = ((point_x // (width // rows)), (point_y // (width // rows)))
-                if point_x >= width:
-                    continue # Checks if user presses button
-                elif start == None and end != grid[pos_x][pos_y]:
+                if ((920 <= point_x <= 1175) and (460 <= point_y <= 535)) and (start != None) and (end != None) and (algorithm != None):
+                    if algorithm == 1:
+                        pass #call upon A* 
+                    elif algorithm == 2:
+                        pass #call upon BFS
+                    elif algorithm == 3:
+                        pass #call upon Dijkstra's
+                    algorithm = None 
+                    continue
+                elif ((990 <= point_x <= 1105) and (260 <= point_y <= 335)):
+                    algorithm = 1   #indicates that A* algorithm has been chosen
+                elif ((920 <= point_x <= 1035) and (360 <= point_y <= 435)):
+                    algorithm = 2   #indicates that BFS algorithm has been chosen
+                elif ((1060 <= point_x <= 1175) and (360 <= point_y <= 435)):
+                    algorithm = 3   #indicates that Dijkstra's algorithm has been chosen
+                elif point_x >= width:
+                    continue
+                elif start == None and end != grid[pos_x][pos_y]: #Checks if start block has been placed
                     start = grid[pos_x][pos_y]
                     grid[pos_x][pos_y].set_start()
-                elif start != None and end == None and start != grid[pos_x][pos_y]:
+                elif start != None and end == None and start != grid[pos_x][pos_y]: #Checks if end block has been placed
                     end = grid[pos_x][pos_y]
                     grid[pos_x][pos_y].set_end()
-                elif start != grid[pos_x][pos_y] and end != grid[pos_x][pos_y]:
+                elif start != grid[pos_x][pos_y] and end != grid[pos_x][pos_y]: #then places a wall if both end and start blocks have been placed
                     grid[pos_x][pos_y].set_wall()
+                
             #Erase node blocks
             if pygame.mouse.get_pressed()[2]:
                 (point_x, point_y) = pygame.mouse.get_pos()
