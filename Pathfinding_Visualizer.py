@@ -17,10 +17,10 @@ GREEN = (34,177,76)
 NEON_RED = (255,49,49)
 RED = (220,20,60)
 GREY = (169,169,169)
-CYAN = (0,100,100)
-PURPLE = (160,32,240)
+CYAN = (127,255,212)
+PURPLE = (147,112,219)
 LIGHT_PURPLE = (204, 153, 255)
-YELLOW = (255,255,0)
+YELLOW = (255,255,102)
 BLUE = (100, 149, 237)
 
 #Initializes the pygame screen
@@ -87,27 +87,39 @@ def bfs(screen, rows, grid, start, end):
     rows = len(grid)
     cols = len(grid[0])
 
-    #visited = set()
-    queue = deque([(start, None)])
-    parents = {}
+    queue = deque()
+    queue.append(start)
+    parents = {start: None}
 
     while queue:
-        node, parent = queue.popleft()
-        parents[node] = parent 
+        node = queue.popleft()
 
-        if node.is_unvisited() or node.is_start():
-            #visited.append(node)
-            if node.is_unvisited():
+        if node.is_end():
+            break
+        elif node.is_wall() or node.is_visited():
+            continue
+        else:
+            if node.is_open():
                 node.set_visited()
-
+                node.draw_node(screen)
+                pygame.display.update()
             neighbours = node.neighbours()
-
             for neighbour in neighbours:
                 pos_x, pos_y = neighbour
                 if 0 <= pos_x < rows and 0 <= pos_y < cols:
-                    queue.append((grid[pos_x][pos_y], node))
-        elif node.is_end():
-            break
+                    neighbour_node = grid[pos_x][pos_y]
+                    if neighbour_node.is_wall() or neighbour_node.is_visited() or neighbour_node.is_start():
+                        continue
+                    if neighbour_node.is_unvisited():
+                        neighbour_node.set_open()
+                    neighbour_node.draw_node(screen)
+                    queue.append(grid[pos_x][pos_y])
+                    pygame.display.update()
+                    if neighbour_node.is_end():
+                        parents[end] = node
+                        break
+                    parents[neighbour_node] = node
+
     if end not in parents:
         return None
     
@@ -117,11 +129,15 @@ def bfs(screen, rows, grid, start, end):
         path.append(current_node)
         current_node = parents[current_node]
 
-    path = path[::-1]    
+    path = path[::-1]
 
     for path_node in path:
+        if path_node.is_start() or path_node.is_end():
+            continue
         path_node.set_path()
-    
+        path_node.draw_node(screen)
+    pygame.display.update()
+
     return len(path)
 
 def draw_alg_buttons(screen):
@@ -309,7 +325,7 @@ def main(screen, width):
     algorithm = None
 
     running = True
-    started = False
+    #started = False
 
     while running:
         draw_all(screen, width, rows, grid, algorithm)
@@ -317,17 +333,15 @@ def main(screen, width):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
-            if started:
-                continue
-            #Starts search algorithm
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN and start != None and end != None:
-                    started = True
+            #if started:
+            #    continue
+           
                     #Call upon selected algorithm
             #Checks if user wants to place node blocks or press buttons, then does accordingly
             if pygame.mouse.get_pressed()[0]:
                 (point_x, point_y) = pygame.mouse.get_pos()
                 (pos_x, pos_y) = ((point_x // (width // rows)), (point_y // (width // rows)))
+                #Starts search algorithm
                 if ((920 <= point_x <= 1175) and (460 <= point_y <= 535)) and (start != None) and (end != None) and (algorithm != None):
                     if algorithm == 1:
                         pass #call upon A* 
