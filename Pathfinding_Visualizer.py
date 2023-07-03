@@ -4,6 +4,7 @@ Created: 2023-05-04
 """
 import pygame, math
 from queue import PriorityQueue
+from collections import deque
 
 #Initializes pygame
 pygame.init()
@@ -42,14 +43,13 @@ class Node:
         self.y = col * width
         self.width = width
         self.total_rows = total_rows
-        self.neighbours = []
 
     #Sets the state of the node
     def set_start(self):
         self.colour = NEON_GREEN
     def set_end(self):
         self.colour = NEON_RED
-    def set_visted(self):
+    def set_visited(self):
         self.colour = PURPLE
     def set_open(self):
         self.colour = CYAN
@@ -81,8 +81,48 @@ class Node:
         pygame.draw.rect(screen, self.colour, (self.x, self.y, self.width, self.width))
 
     def neighbours(self):
-        pass
+        return [(self.row - 1, self.col), (self.row, self.col - 1), (self.row + 1, self.col), (self.row, self.col + 1)]
 
+def bfs(screen, rows, grid, start, end):
+    rows = len(grid)
+    cols = len(grid[0])
+
+    #visited = set()
+    queue = deque([(start, None)])
+    parents = {}
+
+    while queue:
+        node, parent = queue.popleft()
+        parents[node] = parent 
+
+        if node.is_unvisited() or node.is_start():
+            #visited.append(node)
+            if node.is_unvisited():
+                node.set_visited()
+
+            neighbours = node.neighbours()
+
+            for neighbour in neighbours:
+                pos_x, pos_y = neighbour
+                if 0 <= pos_x < rows and 0 <= pos_y < cols:
+                    queue.append((grid[pos_x][pos_y], node))
+        elif node.is_end():
+            break
+    if end not in parents:
+        return None
+    
+    path = []
+    current_node = end
+    while current_node:
+        path.append(current_node)
+        current_node = parents[current_node]
+
+    path = path[::-1]    
+
+    for path_node in path:
+        path_node.set_path()
+    
+    return len(path)
 
 def draw_alg_buttons(screen):
     font1 = pygame.font.SysFont(None, 48)
@@ -110,9 +150,15 @@ def draw_alg_buttons(screen):
     pygame.draw.rect(screen, BLACK, [920, 460, 255, 75], border_radius= 15)
 
     #Draws the stats board
-    pygame.draw.rect(screen, BLACK, [920, 560, 255, 300])
-    stats_title = font1.render("Stats:", True, WHITE)
-    screen.blit(stats_title, (997, 575))
+    pygame.draw.rect(screen, BLACK, [920, 560, 255, 200])
+    stats_title = font2.render("Stats:", True, WHITE)
+    screen.blit(stats_title, (1020, 573))
+
+    #Draws the RESET button
+    pygame.draw.rect(screen, GREY, [920, 792, 255, 75], border_radius= 15)
+    pygame.draw.rect(screen, BLACK, [920, 792, 255, 75], 5, border_radius= 15)
+    reset_title = font1.render("Reset", True, BLACK)
+    screen.blit(reset_title, (1000, 815))
     
 def draw_start_button(screen):
     font = pygame.font.SysFont(None, 48)
@@ -286,7 +332,7 @@ def main(screen, width):
                     if algorithm == 1:
                         pass #call upon A* 
                     elif algorithm == 2:
-                        pass #call upon BFS
+                        bfs(screen, rows, grid, start, end) #call upon BFS
                     elif algorithm == 3:
                         pass #call upon Dijkstra's
                     algorithm = None 
@@ -297,6 +343,13 @@ def main(screen, width):
                     algorithm = 2   #indicates that BFS algorithm has been chosen
                 elif ((1060 <= point_x <= 1175) and (360 <= point_y <= 435)):
                     algorithm = 3   #indicates that Dijkstra's algorithm has been chosen
+                elif ((920 <= point_x <= 1175) and (792 <= point_y <= 867)): #checks if "reset" button was pressed, then resets the board
+                    for i in range(rows):
+                        for j in range(rows):
+                            grid[i][j].set_unvisited()
+                    start = None
+                    end = None
+                    algorithm = None
                 elif point_x >= width:
                     continue
                 elif start == None and end != grid[pos_x][pos_y]: #Checks if start block has been placed
